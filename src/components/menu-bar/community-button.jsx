@@ -19,6 +19,7 @@ const CommunityButton = ({
         iconClassName={styles.communityButtonIcon}
         iconSrc={communityIcon}
         onClick={onClick}
+        height="5px"
     >
         <FormattedMessage
             defaultMessage="See Project Page"

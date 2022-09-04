@@ -17,7 +17,7 @@
         simplifies by all of this by removing padding from the equation.
     */
     box-sizing: border-box;
-    height: $menu-bar-height;
+    height: 28px;
 
     /*
         @todo: This adds ~20px in Chrome, when scrolling to the right,
@@ -30,6 +30,7 @@
     background-color: $motion-primary;
     color: $ui-white;
 }
+
 [theme="dark"] .menu-bar {
     background-color: $motion-primary-dark;
 }
@@ -44,7 +45,7 @@
 }
 
 .scratch-logo {
-    height:  1.6rem;
+    height: 1.6rem;
     vertical-align: middle;
 }
 
@@ -53,7 +54,7 @@
 }
 
 .language-icon {
-    height:  1.5rem;
+    height: 1.5rem;
     vertical-align: middle;
 }
 
@@ -77,7 +78,7 @@
     position: relative;
     align-items: center;
     white-space: nowrap;
-    height: $menu-bar-height;
+    height: 28px;
 }
 
 .menu-bar-item.hoverable {
@@ -97,6 +98,7 @@
 .title-field-growable {
     flex-grow: 1;
     width: 2rem;
+    height: 4px;
 }
 
 .file-group {
@@ -114,26 +116,27 @@
 }
 
 .menu-bar-menu {
-    margin-top: $menu-bar-height;
+    margin-top: 28px;
     z-index: $z-index-menu-bar;
 }
 
 .feedback-link {
-    color: $motion-primary !important;
+    color: $motion-primary  !important;
     text-decoration: none;
 }
+
 [theme="dark"] .feedback-link {
-    color: $motion-primary-dark !important;
+    color: $motion-primary-dark  !important;
 }
 
 .feedback-button {
-    background-color: $ui-white;
-    height: 34px;
+    height: 16px;
+    color: white;
 }
 
 .divider {
     margin: 0 .5rem;
-    height: 34px;
+    height: 26px;
 }
 
 .author-info {
@@ -142,7 +145,7 @@
 }
 
 .menu-bar-button {
-    height: $menu-bar-button-size;
+    height: 16px;
 }
 
 .remix-button {
@@ -153,7 +156,7 @@
     height: 1.25rem;
 }
 
-.coming-soon >:not(.coming-soon-tooltip) {
+.coming-soon>:not(.coming-soon-tooltip) {
     opacity: 0.5;
 }
 
@@ -176,7 +179,8 @@
     margin-right: 0.35rem;
 }
 
-.account-nav-menu, .mystuff-button {
+.account-nav-menu,
+.mystuff-button {
     padding: 0 .25rem;
     display: flex;
     flex-direction: row;
@@ -206,23 +210,24 @@
     opacity: 0.5;
 }
 
-.mystuff > a {
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: 45%;
-  padding-right: 10px;
-  padding-left: 10px;
-  width: 30px;
-  overflow: hidden;
-  text-indent: 50px;
-  white-space: nowrap;
-}
-.mystuff > a:hover {
-  background-size: 50%;
+.mystuff>a {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 45%;
+    padding-right: 10px;
+    padding-left: 10px;
+    width: 30px;
+    overflow: hidden;
+    text-indent: 50px;
+    white-space: nowrap;
 }
 
-.mystuff > a {
-  background-image: url("/images/mystuff.png");
+.mystuff>a:hover {
+    background-size: 50%;
+}
+
+.mystuff>a {
+    background-image: url("/images/mystuff.png");
 }
 
 .about-icon {
@@ -233,6 +238,7 @@
 
 /* tw: styles to override <a> styles */
 .menu-item-link {
-    color: $ui-white !important;
+    color: $ui-white  !important;
+    size: smaller;
     text-decoration: none;
 }

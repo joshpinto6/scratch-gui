@@ -17,8 +17,8 @@ const BufferedInput = BufferedInputHOC(Input);
 
 const messages = defineMessages({
     title: {
-        defaultMessage: 'Advanced Settings',
-        description: 'Title of settings modal',
+        defaultMessage: 'Setup Github Integration',
+        description: 'Title of Github integrations modal',
         id: 'tw.settingsModal.title'
     },
     help: {
@@ -431,6 +431,43 @@ const GithubModalComponent = props => (
         id="githubModal"
     >
         <Box className={styles.body}>
+            <h2>
+                <FormattedMessage
+                    defaultMessage="Login with Github"
+                    description=""
+                    id="tw.settingsModal.loginTitle"
+                />
+            </h2>
+            <p>
+                <FormattedMessage
+                    defaultMessage="Login with your Github Username and a Personal Access Token (PAT)."
+                    description=""
+                    id="tw.settingsModal.loginDescription"
+                />
+                <FormattedMessage
+                    defaultMessage=" Read the full documentation "
+                    description=""
+                    id="tw.settingsModal.loginDescriptionP2"
+                />
+                <a href="https://packager.turbowarp.org/guides/source-control#using-personal-access-tokens">
+                    <FormattedMessage
+                        defaultMessage="here."
+                        description=""
+                        id="tw.settingsModal.loginDescriptionLink"
+                    />
+                </a>
+            </p>
+            <FormattedMessage
+                defaultMessage="Hello!"
+                description="Settings modal section"
+                id="tw.settingsModal.hellotest"
+            />
+            <span>
+                <BufferedInput
+                    value="Hello"
+                    placeholder="Username"
+                />
+            </span>
             <Header>
                 <FormattedMessage
                     defaultMessage="Featured"

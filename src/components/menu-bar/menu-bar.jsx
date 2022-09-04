@@ -456,8 +456,8 @@ class MenuBar extends React.Component {
                                 <img
                                     className={styles.languageIcon}
                                     src={languageIcon}
-                                    width="24"
-                                    height="24"
+                                    width="20"
+                                    height="20"
                                 />
                                 <img
                                     className={styles.languageCaret}
@@ -476,8 +476,8 @@ class MenuBar extends React.Component {
                             >
                                 <img
                                     src={themeIcon}
-                                    width="24"
-                                    height="24"
+                                    width="18"
+                                    height="18"
                                 />
                             </div>
                         )}
@@ -770,7 +770,7 @@ class MenuBar extends React.Component {
                                             onClick={this.props.onClickGithub}
                                         >
                                             <FormattedMessage
-                                            defaultMessage="Setup Github Integration"
+                                            defaultMessage="Setup Source Control"
                                             description="Initialize Github Integration"
                                             id="tw.menuBar.setupGithub"
                                         />
