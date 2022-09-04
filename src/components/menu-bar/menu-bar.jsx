@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
@@ -32,7 +33,7 @@ import CloudVariablesToggler from '../../containers/tw-cloud-toggler.jsx';
 import TWRestorePointLoader from '../../containers/tw-restore-point-loader.jsx';
 import TWSaveStatus from './tw-save-status.jsx';
 
-import {openTipsLibrary, openSettingsModal} from '../../reducers/modals';
+import {openTipsLibrary, openSettingsModal, openGithubModal} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
 import {
     autoUpdateProject,
@@ -584,6 +585,7 @@ class MenuBar extends React.Component {
                                         >
                                             {this.props.intl.formatMessage(sharedMessages.loadFromComputerTitle)}
                                         </MenuItem>
+                                        
                                         <SB3Downloader>{(_className, downloadProject, extended) => (
                                             <React.Fragment>
                                                 {extended.available && (
@@ -626,7 +628,9 @@ class MenuBar extends React.Component {
                                                 </MenuItem>
                                             </React.Fragment>
                                         )}</SB3Downloader>
+                                        
                                     </MenuSection>
+
                                     {this.props.onClickPackager && (
                                         <MenuSection>
                                             <MenuItem
@@ -641,6 +645,7 @@ class MenuBar extends React.Component {
                                             </MenuItem>
                                         </MenuSection>
                                     )}
+
                                     <MenuSection>
                                         <TWRestorePointLoader>{(className, loadRestorePoint) => (
                                             <MenuItem
@@ -760,6 +765,17 @@ class MenuBar extends React.Component {
                                         </MenuItem>
                                     )}</CloudVariablesToggler>
                                 </MenuSection>
+                                <MenuSection>
+                                    <MenuItem
+                                            onClick={this.props.onClickGithub}
+                                        >
+                                            <FormattedMessage
+                                            defaultMessage="Setup Github Integration"
+                                            description="Initialize Github Integration"
+                                            id="tw.menuBar.setupGithub"
+                                        />
+                                        </MenuItem>
+                                    </MenuSection>
                                 <MenuSection>
                                     <MenuItem onClick={this.props.onClickSettings}>
                                         <FormattedMessage
@@ -971,6 +987,7 @@ MenuBar.propTypes = {
     onClickSave: PropTypes.func,
     onClickSaveAsCopy: PropTypes.func,
     onClickSettings: PropTypes.func,
+    onClickGithub: PropTypes.func,
     onClickErrors: PropTypes.func,
     onRequestCloseErrors: PropTypes.func,
     onLogOut: PropTypes.func,
@@ -983,6 +1000,7 @@ MenuBar.propTypes = {
     onRequestCloseEdit: PropTypes.func,
     onRequestCloseFile: PropTypes.func,
     onRequestCloseLanguage: PropTypes.func,
+    // eslint-disable-next-line react/no-unused-prop-types
     onRequestCloseLogin: PropTypes.func,
     onSeeCommunity: PropTypes.func,
     onShare: PropTypes.func,
@@ -1061,6 +1079,10 @@ const mapDispatchToProps = dispatch => ({
     onClickSaveAsCopy: () => dispatch(saveProjectAsCopy()),
     onClickSettings: () => {
         dispatch(openSettingsModal());
+        dispatch(closeEditMenu());
+    },
+    onClickGithub: () => {
+        dispatch(openGithubModal());
         dispatch(closeEditMenu());
     },
     onSeeCommunity: () => dispatch(setPlayer(true))

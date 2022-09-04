@@ -5,7 +5,7 @@ import VM from 'scratch-vm';
 import {STAGE_SIZE_MODES} from '../lib/layout-constants';
 import {setStageSize} from '../reducers/stage-size';
 import {setFullScreen} from '../reducers/mode';
-import {openSettingsModal} from '../reducers/modals';
+import {openSettingsModal, openGithubModal} from '../reducers/modals';
 
 import {connect} from 'react-redux';
 
@@ -73,7 +73,8 @@ const mapDispatchToProps = dispatch => ({
     onSetStageSmall: () => dispatch(setStageSize(STAGE_SIZE_MODES.small)),
     onSetStageFull: () => dispatch(setFullScreen(true)),
     onSetStageUnFull: () => dispatch(setFullScreen(false)),
-    onOpenSettings: () => dispatch(openSettingsModal())
+    onOpenSettings: () => dispatch(openSettingsModal()),
+    onOpenGithub: () => dispatch(openGithubModal())
 });
 
 export default connect(
