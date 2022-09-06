@@ -464,7 +464,6 @@ const GithubModalComponent = props => (
             />
             <span>
                 <BufferedInput
-                    value="Hello"
                     placeholder="Username"
                 />
             </span>
