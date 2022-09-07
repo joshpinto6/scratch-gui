@@ -14,14 +14,14 @@ jobs:
       uses: n1hility/cancel-previous-runs@v2.0
   build:
     needs: [cancel-workflow-runs]
-    name: Build with Docusaurus
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          cache-dependency-path: './docs/package-lock.json'
-          node-version: 18
+          cache-dependency-path: './package-lock.json'
+          node-version: 14
           cache: npm
 
       - name: Install dependencies
