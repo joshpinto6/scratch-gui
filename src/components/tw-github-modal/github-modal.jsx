@@ -1,4 +1,4 @@
-import {defineMessages, FormattedMessage, intlShape, injectIntl} from 'react-intl';
+import { defineMessages, FormattedMessage, intlShape, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
@@ -19,12 +19,12 @@ const messages = defineMessages({
     title: {
         defaultMessage: 'Setup Github Integration',
         description: 'Title of Github integrations modal',
-        id: 'tw.settingsModal.title'
+        id: 'tw.githubModal.title'
     },
     help: {
         defaultMessage: 'Click for help',
         description: 'Hover text of help icon in settings',
-        id: 'tw.settingsModal.help'
+        id: 'tw.githubModal.help'
     }
 });
 
@@ -41,7 +41,7 @@ const LearnMore = props => (
 );
 
 class UnwrappedSetting extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         bindAll(this, [
             'handleClickHelp'
@@ -50,7 +50,7 @@ class UnwrappedSetting extends React.Component {
             helpVisible: false
         };
     }
-    componentDidUpdate (prevProps) {
+    componentDidUpdate(prevProps) {
         if (this.props.active && !prevProps.active) {
             // eslint-disable-next-line react/no-did-update-set-state
             this.setState({
@@ -58,12 +58,12 @@ class UnwrappedSetting extends React.Component {
             });
         }
     }
-    handleClickHelp () {
+    handleClickHelp() {
         this.setState(prevState => ({
             helpVisible: !prevState.helpVisible
         }));
     }
-    render () {
+    render() {
         return (
             <div
                 className={classNames(styles.setting, {
@@ -99,7 +99,7 @@ UnwrappedSetting.propTypes = {
 };
 const Setting = injectIntl(UnwrappedSetting);
 
-const BooleanSetting = ({value, onChange, label, ...props}) => (
+const BooleanSetting = ({ value, onChange, label, ...props }) => (
     <Setting
         {...props}
         active={value}
@@ -122,296 +122,38 @@ BooleanSetting.propTypes = {
     label: PropTypes.node.isRequired
 };
 
-const HighQualityPen = props => (
-    <BooleanSetting
-        {...props}
-        label={
-            <FormattedMessage
-                defaultMessage="High Quality Pen"
-                description="High quality pen setting"
-                id="tw.settingsModal.highQualityPen"
-            />
-        }
-        help={
-            <FormattedMessage
-                // eslint-disable-next-line max-len
-                defaultMessage="Allows pen projects to render at higher resolutions and disables some coordinate rounding in the editor. Not all projects benefit from this setting and it may impact performance."
-                description="High quality pen setting help"
-                id="tw.settingsModal.highQualityPenHelp"
-            />
-        }
-        slug="high-quality-pen"
-    />
+const SignInButton = ({ onSignInWithGithub }) => (
+    <button
+        onClick={onSignInWithGithub}
+        className={[styles.button, styles.signinButton].join(' ')}
+    >
+        <FormattedMessage
+            defaultMessage="Setup Github Integration"
+            description="Link to an existing repo or create a new repository using Github."
+            id="tw.githubModal.initGithub"
+        />
+    </button>
 );
-
-const CustomFPS = props => (
-    <BooleanSetting
-        value={props.framerate !== 30}
-        onChange={props.onChange}
-        label={
-            <FormattedMessage
-                defaultMessage="60 FPS (Custom FPS)"
-                description="FPS setting"
-                id="tw.settingsModal.fps"
-            />
-        }
-        help={
-            <FormattedMessage
-                // eslint-disable-next-line max-len
-                defaultMessage="Runs scripts 60 times per second instead of 30. Most projects will not work properly with this enabled. You should try Interpolation with 60 FPS mode disabled if that is the case. {customFramerate}."
-                description="FPS setting help"
-                id="tw.settingsModal.fpsHelp"
-                values={{
-                    customFramerate: (
-                        <a
-                            onClick={props.onCustomizeFramerate}
-                            tabIndex="0"
-                        >
-                            <FormattedMessage
-                                defaultMessage="Click to use a framerate other than 30 or 60"
-                                description="FPS settings help"
-                                id="tw.settingsModal.fpsHelp.customFramerate"
-                            />
-                        </a>
-                    )
-                }}
-            />
-        }
-        slug="custom-fps"
-    />
-);
-CustomFPS.propTypes = {
-    framerate: PropTypes.number,
-    onChange: PropTypes.func,
-    onCustomizeFramerate: PropTypes.func
+SignInButton.propTypes = {
+    onSignInWithGithub: PropTypes.func
 };
 
-const Interpolation = props => (
-    <BooleanSetting
-        {...props}
-        label={
-            <FormattedMessage
-                defaultMessage="Interpolation"
-                description="Interpolation setting"
-                id="tw.settingsModal.interpolation"
-            />
-        }
-        help={
-            <FormattedMessage
-                // eslint-disable-next-line max-len
-                defaultMessage="Makes projects appear smoother by interpolating sprite motion. Interpolation should not be used on 3D projects, raytracers, pen projects, and laggy projects as interpolation will make them run slower without making them appear smoother."
-                description="Interpolation setting help"
-                id="tw.settingsModal.interpolationHelp"
-            />
-        }
-        slug="interpolation"
-    />
-);
 
-const InfiniteClones = props => (
-    <BooleanSetting
-        {...props}
-        label={
-            <FormattedMessage
-                defaultMessage="Infinite Clones"
-                description="Infinite Clones setting"
-                id="tw.settingsModal.infiniteClones"
-            />
-        }
-        help={
-            <FormattedMessage
-                defaultMessage="Disables Scratch's 300 clone limit."
-                description="Infinite Clones setting help"
-                id="tw.settingsModal.infiniteClonesHelp"
-            />
-        }
-        slug="infinite-clones"
-    />
-);
-
-const RemoveFencing = props => (
-    <BooleanSetting
-        {...props}
-        label={
-            <FormattedMessage
-                defaultMessage="Remove Fencing"
-                description="Remove Fencing setting"
-                id="tw.settingsModal.removeFencing"
-            />
-        }
-        help={
-            <FormattedMessage
-                // eslint-disable-next-line max-len
-                defaultMessage="Allows sprites to move offscreen, become as large or as small as they want, and makes touching blocks work offscreen."
-                description="Remove Fencing setting help"
-                id="tw.settingsModal.removeFencingHelp"
-            />
-        }
-        slug="remove-fencing"
-    />
-);
-
-const RemoveMiscLimits = props => (
-    <BooleanSetting
-        {...props}
-        label={
-            <FormattedMessage
-                defaultMessage="Remove Miscellaneous Limits"
-                description="Remove Miscellaneous Limits setting"
-                id="tw.settingsModal.removeMiscLimits"
-            />
-        }
-        help={
-            <FormattedMessage
-                defaultMessage="Removes sound effect limits and pen size limits."
-                description="Remove Miscellaneous Limits setting help"
-                id="tw.settingsModal.removeMiscLimitsHelp"
-            />
-        }
-        slug="remove-misc-limits"
-    />
-);
-
-const WarpTimer = props => (
-    <BooleanSetting
-        {...props}
-        label={
-            <FormattedMessage
-                defaultMessage="Warp Timer"
-                description="Warp Timer setting"
-                id="tw.settingsModal.warpTimer"
-            />
-        }
-        help={
-            <FormattedMessage
-                // eslint-disable-next-line max-len
-                defaultMessage="Makes scripts check if they are stuck in a long or infinite loop and run at a low framerate instead of getting stuck until the loop finishes. This fixes most crashes but has a significant performance impact, so it's only enabled by default in the editor."
-                description="Warp Timer help"
-                id="tw.settingsModal.warpTimerHelp"
-            />
-        }
-        slug="warp-timer"
-    />
-);
-
-const DisableCompiler = props => (
-    <BooleanSetting
-        {...props}
-        label={
-            <FormattedMessage
-                defaultMessage="Disable Compiler"
-                description="Disable Compiler setting"
-                id="tw.settingsModal.disableCompiler"
-            />
-        }
-        help={
-            <FormattedMessage
-                // eslint-disable-next-line max-len
-                defaultMessage="Disables the TurboWarp compiler. You may want to enable this while editing projects so that scripts update immediately. Otherwise, you should never enable this."
-                description="Disable Compiler help"
-                id="tw.settingsModal.disableCompilerHelp"
-            />
-        }
-        slug="disable-compiler"
-    />
-);
-
-const CustomStageSize = ({
-    customStageSizeEnabled,
-    stageWidth,
-    onStageWidthChange,
-    stageHeight,
-    onStageHeightChange
-}) => (
-    <Setting
-        active={customStageSizeEnabled}
-        primary={(
-            <div className={classNames(styles.label, styles.customStageSize)}>
-                <FormattedMessage
-                    defaultMessage="Custom Stage Size:"
-                    description="Custom Stage Size option"
-                    id="tw.settingsModal.customStageSize"
-                />
-                <BufferedInput
-                    value={stageWidth}
-                    onSubmit={onStageWidthChange}
-                    className={styles.customStageSizeInput}
-                    type="number"
-                    min="0"
-                    max="1024"
-                    step="1"
-                />
-                <span>{'×'}</span>
-                <BufferedInput
-                    value={stageHeight}
-                    onSubmit={onStageHeightChange}
-                    className={styles.customStageSizeInput}
-                    type="number"
-                    min="0"
-                    max="1024"
-                    step="1"
-                />
-            </div>
-        )}
-        secondary={
-            (stageWidth >= 1000 || stageHeight >= 1000) && (
-                <div className={styles.warning}>
-                    <FormattedMessage
-                        // eslint-disable-next-line max-len
-                        defaultMessage="Using a custom stage size this large is not recommended! Instead, use a lower size with the same aspect ratio and let fullscreen mode upscale it to match the user's display."
-                        description="Warning about using stages that are too large in settings modal"
-                        id="tw.settingsModal.largeStageWarning"
-                    />
-                    <LearnMore slug="custom-stage-size" />
-                </div>
-            )
-        }
-        help={(
-            <FormattedMessage
-                // eslint-disable-next-line max-len
-                defaultMessage="Changes the size of the Scratch stage from 480x360 to something else. Try 640x360 to make the stage widescreen. Very few projects will handle this properly."
-                description="Custom Stage Size option"
-                id="tw.settingsModal.customStageSizeHelp"
-            />
-        )}
-        slug="custom-stage-size"
-    />
-);
-CustomStageSize.propTypes = {
-    customStageSizeEnabled: PropTypes.bool,
-    stageWidth: PropTypes.number,
-    onStageWidthChange: PropTypes.func,
-    stageHeight: PropTypes.number,
-    onStageHeightChange: PropTypes.func
-};
-
-const StoreProjectOptions = ({onStoreProjectOptions}) => (
-    <div className={styles.setting}>
-        <div>
-            <button
-                onClick={onStoreProjectOptions}
-                className={styles.button}
-            >
-                <FormattedMessage
-                    defaultMessage="Store settings in project"
-                    description="Button in settings modal"
-                    id="tw.settingsModal.storeProjectOptions"
-                />
-            </button>
-            <p>
-                <FormattedMessage
-                    // eslint-disable-next-line max-len
-                    defaultMessage="Stores the selected settings in the project so they will be automatically applied when TurboWarp loads this project. Warp timer and disable compiler will not be saved."
-                    description="Help text for the store settings in project button"
-                    id="tw.settingsModal.storeProjectOptionsHelp"
-                />
-            </p>
-        </div>
-    </div>
-);
-StoreProjectOptions.propTypes = {
-    onStoreProjectOptions: PropTypes.func
-};
+// const InitRepoButton = ({onInitializeRepository}) => (
+//     <button
+//         onClick={onInitializeRepository}
+//         className={[styles.button, styles.signinButton].join(' ')}
+//     >
+//         <FormattedMessage
+//             defaultMessage="Setup Github Integration"
+//             description="Link to an existing or create a new repository using Github."
+//             id="tw.githubModal.initGithub"
+//         />
+//     </button>
+// );
+// InitRepoButton.propTypes = {
+//     onInitializeRepository: PropTypes.func
+// };
 
 const Header = props => (
     <div className={styles.header}>
@@ -431,18 +173,35 @@ const GithubModalComponent = props => (
         id="githubModal"
     >
         <Box className={styles.body}>
-            <h2>
+            <Header>
                 <FormattedMessage
-                    defaultMessage="Login with Github"
-                    description=""
-                    id="tw.settingsModal.loginTitle"
+                    defaultMessage="Login With Github"
+                    description="Github section label"
+                    id="tw.githubModal.loginLabel"
                 />
-            </h2>
-            <p>
+            </Header>
+            {/* <br /> */}
+            {/* <FormattedMessage
+                defaultMessage="VCS (Version Control System):"
+                description=""
+                id="tw.githubModal.vcsSelectLabel"
+            />
+            <span>
+                <select>
+                    <option value="volvo">
+                        <FormattedMessage
+                            defaultMessage="Github REST"
+                            description=""
+                            id="tw.githubModal.vcsOption1"
+                        />
+                    </option>
+                </select>
+            </span> */}
+            {/* <p>
                 <FormattedMessage
-                    defaultMessage="Login with your Github Username and a Personal Access Token (PAT)."
+                    defaultMessage="Login with a Github Personal Access Token (PAT)."
                     description=""
-                    id="tw.settingsModal.loginDescription"
+                    id="tw.githubModal.loginDescription"
                 />
                 <FormattedMessage
                     defaultMessage=" Read the full documentation "
@@ -457,105 +216,215 @@ const GithubModalComponent = props => (
                     />
                 </a>
             </p>
-            <FormattedMessage
-                defaultMessage="Hello!"
-                description="Settings modal section"
-                id="tw.settingsModal.hellotest"
-            />
-            <span>
-                <BufferedInput
-                    placeholder="Username"
+ */}
+
+
+            {/* <SignInButton
+                {...props}
+            /> */}
+            <p>
+                <FormattedMessage
+                    defaultMessage="Enter your Github username and password. "
+                    id="tw.githubModal.popupLabel"
                 />
-            </span>
+                {/* <i></i>
+                <FormattedMessage
+                    defaultMessage="How do I generate a Personal Access Token?"
+                    description=""
+                    id="tw.settingsModal.loginDescriptionP2"
+                />
+                </i> */}
+
+            </p>
+            <Setting
+                {...props}
+                className={styles.textInput}
+                primary={
+                    <div>
+                        <FormattedMessage
+                            defaultMessage="Username:"
+                            description="Username input label"
+                            id="tw.githubModal.usernameLabel"
+                        />
+                        <span>
+                            <BufferedInput
+                                className={styles.inputBox}
+                                placeholder="Username"
+                                id="githubUsername"
+                            />
+                        </span>
+                    </div>
+                }
+                help={
+                    <div
+                        className={styles.helpLabel}
+                    >
+                        <FormattedMessage
+                            // eslint-disable-next-line max-len
+                            defaultMessage="Enter your Github account username."
+                            description="Github Username help"
+                            id="tw.githubModal.usernameHelp"
+                        />
+                    </div>
+                }
+            />
+            <Setting
+                {...props}
+                className={styles.textInput}
+                id="passwordSetting"
+                primary={
+                    <div>
+                        <FormattedMessage
+                            defaultMessage="Password:"
+                            description="Password input label"
+                            id="tw.githubModal.passwordLabel"
+                        />
+                        <span>
+                            <BufferedInput
+                                className={styles.inputBox}
+                                placeholder="Password"
+                                type="password"
+                                id="githubPasswordInput"
+                            />
+                        </span>
+                    </div>
+                }
+                help={
+                    <div
+                        className={styles.helpLabel}
+                    >
+                        <FormattedMessage
+                            // eslint-disable-next-line max-len
+                            defaultMessage="Enter the password for your Github account."
+                            description="Github Password help"
+                            id="tw.githubModal.passwordHelp"
+                        />
+                    </div>
+                }
+            />
             <Header>
                 <FormattedMessage
-                    defaultMessage="Featured"
-                    description="Settings modal section"
-                    id="tw.settingsModal.featured"
+                    defaultMessage="Integration Setup"
+                    description="Select Repository section label"
+                    id="tw.githubModal.selectRepoLabel"
                 />
             </Header>
-            <CustomFPS
-                framerate={props.framerate}
-                onChange={props.onFramerateChange}
-                onCustomizeFramerate={props.onCustomizeFramerate}
-            />
-            <Interpolation
-                value={props.interpolation}
-                onChange={props.onInterpolationChange}
-            />
-            <HighQualityPen
-                value={props.highQualityPen}
-                onChange={props.onHighQualityPenChange}
-            />
-            <WarpTimer
-                value={props.warpTimer}
-                onChange={props.onWarpTimerChange}
-            />
-            <Header>
+            <p>
                 <FormattedMessage
-                    defaultMessage="Remove Limits"
-                    description="Settings modal section"
-                    id="tw.settingsModal.removeLimits"
+                    defaultMessage="Enter your repository name and a personal access token for your account."
                 />
-            </Header>
-            <InfiniteClones
-                value={props.infiniteClones}
-                onChange={props.onInfiniteClonesChange}
+                <a
+                    href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token"
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    <i>
+                        <FormattedMessage
+                            defaultMessage=" How do I generate a Personal Access Token?"
+                            description=""
+                            id="tw.githubModal.documentationLink"
+                        />
+                    </i>
+                </a>
+            </p>
+            <Setting
+                {...props}
+                className={styles.textInput}
+                primary={
+                    <div>
+                        <FormattedMessage
+                            defaultMessage="Repository Name:"
+                            description="Repo Name Input label"
+                            id="tw.githubModal.repoNameLabel"
+                        />
+                        <span>
+                            <BufferedInput
+                                className={styles.inputBox}
+                                placeholder="Repository Name"
+                                id="githubRepoName"
+                            />
+                        </span>
+                    </div>
+                }
+                help={
+                    <div
+                        className={styles.helpLabel}
+                    >
+                        <FormattedMessage
+                            // eslint-disable-next-line max-len
+                            defaultMessage="Enter the name of an existing Github repository. If one is not found, a new one will be created with this name."
+                            description="Github RepoName help"
+                            id="tw.githubModal.repoNameHelp"
+                        />
+                    </div>
+                }
             />
-            <RemoveFencing
-                value={props.removeFencing}
-                onChange={props.onRemoveFencingChange}
+            <Setting
+                {...props}
+                className={styles.textInput}
+                primary={
+                    <div>
+                        <FormattedMessage
+                            defaultMessage="Personal Access Token:"
+                            description="Password input label"
+                            id="tw.githubModal.tokenLabel"
+                        />
+                        <span>
+                            <BufferedInput
+                                className={styles.inputBox}
+                                placeholder="Personal Access Token"
+                                id="githubTokenInput"
+                            />
+                        </span>
+                    </div>
+                }
+                help={
+                    <div
+                        className={styles.helpLabel}
+                    >
+                        <FormattedMessage
+                            // eslint-disable-next-line max-len
+                            defaultMessage="Enter a Github Personal Access Token (PAT). Read {documentationLink} for more information on generating your own."
+                            description="Github Personal Access Token help"
+                            id="tw.githubModal.tokenHelp"
+                            values={{
+                                documentationLink: (
+                                    <a
+                                        href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        <FormattedMessage
+                                            defaultMessage="this page"
+                                            description="Github docs page about Personal Access Tokens."
+                                            id="tw.githubModal.tokenHelp.docsLink"
+                                        />
+                                    </a>
+                                )
+                            }}
+                        />
+                    </div>
+                }
             />
-            <RemoveMiscLimits
-                value={props.removeLimits}
-                onChange={props.onRemoveLimitsChange}
-            />
-            <Header>
+            <p>
                 <FormattedMessage
-                    defaultMessage="Danger Zone"
-                    description="Settings modal section"
-                    id="tw.settingsModal.dangerZone"
+                    defaultMessage="Clicking Setup below will push your project file to the selected Github repository."
+                    description=""
+                    id="tw.githubModal.initGithubLabel"
                 />
-            </Header>
-            {!props.isEmbedded && (
-                <CustomStageSize
-                    {...props}
-                />
-            )}
-            <DisableCompiler
-                value={props.disableCompiler}
-                onChange={props.onDisableCompilerChange}
+            </p>
+
+            <SignInButton
+                {...props}
             />
-            {!props.isEmbedded && (
-                <StoreProjectOptions
-                    {...props}
-                />
-            )}
         </Box>
-    </Modal>
+    </Modal >
 );
 
 GithubModalComponent.propTypes = {
     intl: intlShape,
     onClose: PropTypes.func,
-    isEmbedded: PropTypes.bool,
-    framerate: PropTypes.number,
-    onFramerateChange: PropTypes.func,
-    onCustomizeFramerate: PropTypes.func,
-    highQualityPen: PropTypes.bool,
-    onHighQualityPenChange: PropTypes.func,
-    interpolation: PropTypes.bool,
-    onInterpolationChange: PropTypes.func,
-    infiniteClones: PropTypes.bool,
-    onInfiniteClonesChange: PropTypes.func,
-    removeFencing: PropTypes.bool,
-    onRemoveFencingChange: PropTypes.func,
-    removeLimits: PropTypes.bool,
-    onRemoveLimitsChange: PropTypes.func,
-    warpTimer: PropTypes.bool,
-    onWarpTimerChange: PropTypes.func,
-    disableCompiler: PropTypes.bool,
-    onDisableCompilerChange: PropTypes.func
+    onSignInWithGithub: PropTypes.func
 };
 
 export default injectIntl(GithubModalComponent);

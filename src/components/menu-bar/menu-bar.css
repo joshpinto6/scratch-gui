@@ -17,7 +17,7 @@
         simplifies by all of this by removing padding from the equation.
     */
     box-sizing: border-box;
-    height: 28px;
+    height: $menu-bar-height;
 
     /*
         @todo: This adds ~20px in Chrome, when scrolling to the right,
@@ -78,7 +78,7 @@
     position: relative;
     align-items: center;
     white-space: nowrap;
-    height: 28px;
+    height: $menu-bar-height;
 }
 
 .menu-bar-item.hoverable {
@@ -98,7 +98,6 @@
 .title-field-growable {
     flex-grow: 1;
     width: 2rem;
-    height: 4px;
 }
 
 .file-group {
@@ -116,7 +115,7 @@
 }
 
 .menu-bar-menu {
-    margin-top: 28px;
+    margin-top: $menu-bar-height;
     z-index: $z-index-menu-bar;
 }
 
@@ -131,7 +130,8 @@
 
 .feedback-button {
     height: 16px;
-    color: white;
+    background-color: $ui-white;
+    height: 34px;
 }
 
 .divider {
@@ -145,7 +145,7 @@
 }
 
 .menu-bar-button {
-    height: 16px;
+    height: $menu-bar-button-size;
 }
 
 .remix-button {

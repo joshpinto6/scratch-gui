@@ -1,88 +1,84 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {defineMessages, injectIntl, intlShape} from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 import bindAll from 'lodash.bindall';
-import {connect} from 'react-redux';
-import {closeGithubModal} from '../reducers/modals';
+import { connect } from 'react-redux';
+import { closeGithubModal } from '../reducers/modals';
 import GithubModalComponent from '../components/tw-github-modal/github-modal.jsx';
-import {defaultStageSize} from '../reducers/custom-stage-size';
-
-const messages = defineMessages({
-    newFramerate: {
-        defaultMessage: 'New framerate:',
-        description: 'Prompt shown to choose a new framerate',
-        id: 'tw.menuBar.newFramerate'
-    }
-});
-
+import downloadBlob from '../lib/download-blob';
 class UsernameModal extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         bindAll(this, [
-            'handleFramerateChange',
-            'handleCustomizeFramerate',
-            'handleHighQualityPenChange',
-            'handleInterpolationChange',
-            'handleInfiniteClonesChange',
-            'handleRemoveFencingChange',
-            'handleRemoveLimitsChange',
-            'handleWarpTimerChange',
-            'handleStageWidthChange',
-            'handleStageHeightChange',
-            'handleDisableCompilerChange',
-            'handleStoreProjectOptions'
+            'handleSignInWithGithub'
         ]);
     }
-    handleFramerateChange (e) {
-        this.props.vm.setFramerate(e.target.checked ? 60 : 30);
-    }
-    handleCustomizeFramerate () {
-        // eslint-disable-next-line no-alert
-        const newFramerate = prompt(this.props.intl.formatMessage(messages.newFramerate), this.props.framerate);
-        const parsed = parseFloat(newFramerate);
-        if (isFinite(parsed)) {
-            this.props.vm.setFramerate(parsed);
-        }
-    }
-    handleHighQualityPenChange (e) {
-        this.props.vm.renderer.setUseHighQualityRender(e.target.checked);
-    }
-    handleInterpolationChange (e) {
-        this.props.vm.setInterpolation(e.target.checked);
-    }
-    handleInfiniteClonesChange (e) {
-        this.props.vm.setRuntimeOptions({
-            maxClones: e.target.checked ? Infinity : 300
+
+    mapStateToProps = state => ({
+        fileHandle: state.scratchGui.tw.fileHandle,
+        saveProjectSb3: state.scratchGui.vm.saveProjectSb3.bind(state.scratchGui.vm),
+        canSaveProject: true,
+        projectFilename: 'hello.sb3'
+    });
+
+    downloadProject() {
+        this.props.saveProjectSb3().then(content => {
+            this.finishedSaving();
+            downloadBlob('hello', content);
         });
     }
-    handleRemoveFencingChange (e) {
-        this.props.vm.setRuntimeOptions({
-            fencing: !e.target.checked
-        });
-    }
-    handleRemoveLimitsChange (e) {
-        this.props.vm.setRuntimeOptions({
-            miscLimits: !e.target.checked
-        });
-    }
-    handleWarpTimerChange (e) {
-        this.props.vm.setCompilerOptions({
-            warpTimer: e.target.checked
-        });
-    }
-    handleDisableCompilerChange (e) {
-        this.props.vm.setCompilerOptions({
-            enabled: !e.target.checked
-        });
-    }
-    handleStageWidthChange (value) {
-        this.props.vm.setStageSize(value, this.props.customStageSize.height);
-    }
-    handleStageHeightChange (value) {
-        this.props.vm.setStageSize(this.props.customStageSize.width, value);
-    }
-    handleStoreProjectOptions () {
-        this.props.vm.storeProjectOptions();
+
+
+    handleSignInWithGithub() {
+
+        const personalAccessToken = document.getElementById('githubPasswordInput').value;
+        const username = document.getElementById('githubUsername').value;
+        const repoName = document.getElementById('githubRepoName').value;
+
+        // console.log('Hello!', document.getElementById('githubModalPasswordInput').value);
+        const myHeaders = new Headers();
+        myHeaders.append('Authorization', `Bearer ${personalAccessToken}`);
+
+        // let requestOptions = {
+        //     method: 'GET',
+        //     headers: myHeaders,
+        //     redirect: 'follow'
+        // };
+
+        // fetch('https://api.github.com/user', requestOptions)
+        //     .then(response => response.text())
+        //     .then(result => console.log(result))
+        //     .catch(error => console.log('error', error));
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch(`https://api.github.com/repos/${username}/${repoName}/git/ref/heads/master`, requestOptions).then(res => {
+            if (res.status >= 400) {
+                throw new Error(`Failed to load project: ${res}`);
+            }
+            return res.json();
+        })
+            .then(reference => {
+                console.log(reference);
+                requestOptions = {
+                    method: 'GET',
+                    headers: myHeaders,
+                    redirect: 'follow'
+                };
+
+                const commit_head = fetch(reference.object.url, requestOptions).then(res => {
+                    const blob = '';
+
+                    this.downloadProject();
+                });
+            },
+            err => {
+                alert(`${err}`);
+            });
     }
     render () {
         const {
@@ -95,24 +91,7 @@ class UsernameModal extends React.Component {
         return (
             <GithubModalComponent
                 onClose={this.props.onClose}
-                onFramerateChange={this.handleFramerateChange}
-                onCustomizeFramerate={this.handleCustomizeFramerate}
-                onHighQualityPenChange={this.handleHighQualityPenChange}
-                onInterpolationChange={this.handleInterpolationChange}
-                onInfiniteClonesChange={this.handleInfiniteClonesChange}
-                onRemoveFencingChange={this.handleRemoveFencingChange}
-                onRemoveLimitsChange={this.handleRemoveLimitsChange}
-                onWarpTimerChange={this.handleWarpTimerChange}
-                onStageWidthChange={this.handleStageWidthChange}
-                onStageHeightChange={this.handleStageHeightChange}
-                onDisableCompilerChange={this.handleDisableCompilerChange}
-                stageWidth={this.props.customStageSize.width}
-                stageHeight={this.props.customStageSize.height}
-                customStageSizeEnabled={
-                    this.props.customStageSize.width !== defaultStageSize.width ||
-                    this.props.customStageSize.height !== defaultStageSize.height
-                }
-                onStoreProjectOptions={this.handleStoreProjectOptions}
+                onSignInWithGithub={this.handleSignInWithGithub}
                 {...props}
             />
         );
@@ -123,43 +102,14 @@ UsernameModal.propTypes = {
     intl: intlShape,
     onClose: PropTypes.func,
     vm: PropTypes.shape({
-        renderer: PropTypes.shape({
-            setUseHighQualityRender: PropTypes.func
-        }),
-        setFramerate: PropTypes.func,
-        setCompilerOptions: PropTypes.func,
-        setInterpolation: PropTypes.func,
-        setRuntimeOptions: PropTypes.func,
-        setStageSize: PropTypes.func,
-        storeProjectOptions: PropTypes.func
+
     }),
-    isEmbedded: PropTypes.bool,
-    framerate: PropTypes.number,
-    highQualityPen: PropTypes.bool,
-    interpolation: PropTypes.bool,
-    infiniteClones: PropTypes.bool,
-    removeFencing: PropTypes.bool,
-    removeLimits: PropTypes.bool,
-    warpTimer: PropTypes.bool,
-    customStageSize: PropTypes.shape({
-        width: PropTypes.number,
-        height: PropTypes.number
-    }),
-    disableCompiler: PropTypes.bool
+    saveProjectSb3: PropTypes.func
 };
 
 const mapStateToProps = state => ({
     vm: state.scratchGui.vm,
-    isEmbedded: state.scratchGui.mode.isEmbedded,
-    framerate: state.scratchGui.tw.framerate,
-    highQualityPen: state.scratchGui.tw.highQualityPen,
-    interpolation: state.scratchGui.tw.interpolation,
-    infiniteClones: state.scratchGui.tw.runtimeOptions.maxClones === Infinity,
-    removeFencing: !state.scratchGui.tw.runtimeOptions.fencing,
-    removeLimits: !state.scratchGui.tw.runtimeOptions.miscLimits,
-    warpTimer: state.scratchGui.tw.compilerOptions.warpTimer,
-    customStageSize: state.scratchGui.customStageSize,
-    disableCompiler: !state.scratchGui.tw.compilerOptions.enabled
+    saveProjectSb3: state.scratchGui.vm.saveProjectSb3.bind(state.scratchGui.vm),
 });
 
 const mapDispatchToProps = dispatch => ({
