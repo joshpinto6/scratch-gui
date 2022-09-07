@@ -135,6 +135,8 @@ class UsernameModal extends React.Component {
         const password = document.getElementById('githubPasswordInput').value;
         const repoName = document.getElementById('githubRepoName').value;
 
+        console.log("accessToken", personalAccessToken);
+
         // console.log('Hello!', document.getElementById('githubModalPasswordInput').value);
         let myHeaders = new Headers();
         myHeaders.append('Authorization', `Bearer ${personalAccessToken}`);
