@@ -312,6 +312,7 @@ const GithubModalComponent = props => (
             <p>
                 <FormattedMessage
                     defaultMessage="Enter your repository name and a personal access token for your account."
+                    id="tw.githubModal.integrationSetupLabel"
                 />
                 <a
                     href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token"
