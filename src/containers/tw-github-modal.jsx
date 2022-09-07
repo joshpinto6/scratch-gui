@@ -5,7 +5,7 @@ import bindAll from 'lodash.bindall';
 import { connect } from 'react-redux';
 import { closeGithubModal } from '../reducers/modals';
 import GithubModalComponent from '../components/tw-github-modal/github-modal.jsx';
-import downloadBlob from '../lib/download-blob';
+// import downloadBlob from '../lib/download-blob';
 class UsernameModal extends React.Component {
     constructor(props) {
         super(props);
@@ -21,22 +21,122 @@ class UsernameModal extends React.Component {
         projectFilename: 'hello.sb3'
     });
 
-    downloadProject() {
-        this.props.saveProjectSb3().then(content => {
-            this.finishedSaving();
-            downloadBlob('hello', content);
+    getProjectBlob() {
+        return this.props.saveProjectSb3();
+    }
+
+    commitProjectFile(reference, token, username, repoName) {
+        console.log('Running Reference Handler');
+
+        // Get Commit HEAD
+        const myHeaders = new Headers();
+        myHeaders.append('Authorization', `Bearer ${token}`);
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        const _commitHead = fetch(reference.object.url, requestOptions).then(res => {
+            if (res.status >= 400) {
+                alert(`Error occured while retrieving Head Commit ${res.error.message}`);
+            } else {
+                console.log(res);
+                const treeSha = res.tree.sha;
+                this.getProjectBlob().then(content => {
+                    console.log('Got Blob Content', content);
+
+                    // Upload Blob
+                    const blob = content;
+
+                    const reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onloadend = function () {
+                        const base64String = reader.result;
+                        console.log('Base64 String - ', base64String);
+
+                        console.log('Base64 String without Tags- ',
+                            base64String.substr(base64String.indexOf(', ') + 1));
+
+                        const base64content = base64String.substr(base64String.indexOf(', ') + 1);
+
+                        let raw = JSON.stringify({
+                            content: base64content,
+                            encoding: 'utf-8|base64'
+                        });
+
+                        requestOptions = {
+                            method: 'POST',
+                            headers: myHeaders,
+                            body: raw,
+                            redirect: 'follow'
+                        };
+
+                        fetch(`https://api.github.com/repos/${username}/${repoName}/git/blobs`, requestOptions)
+                            .then(response => response.json())
+                            .then(result => {
+                                if (result.status >= 400) {
+                                    alert(`An Error Occurred While uploading Project Blob ${result.error.message}`);
+                                } else {
+                                    console.log(result);
+                                    const blobSha = result.sha;
+                                    // Get Tree
+                                    requestOptions = {
+                                        method: 'GET',
+                                        headers: myHeaders,
+                                        redirect: 'follow'
+                                    };
+
+                                    fetch(`https://api.github.com/repos/${username}/${repoName}/git/trees/${treeSha}}`, requestOptions)
+                                        .then(response => response.json())
+                                        .then(treeResult => {
+                                            if (treeResult.status >= 400) {
+                                                alert(`An error occurred while Getting Tree ${treeResult.error.msg}`);
+                                            } else {
+                                                const basetree_sha = treeResult.tree[0].sha;
+                                                raw = JSON.stringify({
+                                                    base_tree: basetree_sha,
+                                                    tree: [
+                                                        {
+                                                            path: 'project.sb3',
+                                                            mode: '100644',
+                                                            type: 'blob',
+                                                            sha: blobSha
+                                                        }
+                                                    ]
+                                                });
+
+                                                requestOptions = {
+                                                    method: 'POST',
+                                                    headers: myHeaders,
+                                                    body: raw,
+                                                    redirect: 'follow'
+                                                };
+
+                                                fetch(`https://api.github.com/repos/${username}/${repoName}/git/trees`, requestOptions)
+                                                    .then(response => response.text())
+                                                    .then(createdTree => console.log(createdTree))
+                                                    .catch(error => console.log('error', error));
+                                            }
+                                        });
+                                }
+                            });
+                    };
+                });
+            }
         });
     }
 
-
     handleSignInWithGithub() {
 
-        const personalAccessToken = document.getElementById('githubPasswordInput').value;
+        const personalAccessToken = document.getElementById('githubTokenInput').value;
         const username = document.getElementById('githubUsername').value;
+        const password = document.getElementById('githubPasswordInput').value;
         const repoName = document.getElementById('githubRepoName').value;
 
         // console.log('Hello!', document.getElementById('githubModalPasswordInput').value);
-        const myHeaders = new Headers();
+        let myHeaders = new Headers();
         myHeaders.append('Authorization', `Bearer ${personalAccessToken}`);
 
         // let requestOptions = {
@@ -58,29 +158,67 @@ class UsernameModal extends React.Component {
 
         fetch(`https://api.github.com/repos/${username}/${repoName}/git/ref/heads/master`, requestOptions).then(res => {
             if (res.status >= 400) {
-                throw new Error(`Failed to load project: ${res}`);
+                if (res.status === 404) {
+                    myHeaders = new Headers();
+                    myHeaders.append('user', `${username}:${password}`);
+                    // console.log(myHeaders);
+                    myHeaders.append('Authorization', `Bearer ${repoName}`);
+                    // console.log(myHeaders);
+                    myHeaders.append('Content-Type', 'application/json');
+
+                    const raw = JSON.stringify({
+                        name: `${repoName}`,
+                        auto_init: true
+                    });
+
+                    requestOptions = {
+                        method: 'POST',
+                        headers: myHeaders,
+                        body: raw,
+                        redirect: 'follow'
+                    };
+
+                    fetch('https://api.github.com/user/repos', requestOptions)
+                        .then(response => {
+                            if (res.status >= 400) {
+                                throw new Error(`Repository Creation Failed. Error while attempting to create new repository. ${res.message}`);
+                            } else {
+                                console.log(response.text());
+                                myHeaders = new Headers();
+                                myHeaders.append('Authorization', `Bearer ${personalAccessToken}`);
+                                requestOptions = {
+                                    method: 'GET',
+                                    headers: myHeaders,
+                                    redirect: 'follow'
+                                };
+                                fetch(`https://api.github.com/repos/${username}/${repoName}/git/ref/heads/master`, requestOptions).then(reference => {
+                                    if (reference.status >= 400) {
+                                        throw new Error(`Could not access newly created repository. ${reference.message}`);
+                                    } else {
+                                        console.log('Starting Reference Handler');
+                                        this.commitProjectFile(reference, personalAccessToken, username, repoName);
+                                    }
+                                });
+                            }
+                        });
+                } else if (res.status === 401) {
+                    throw new Error(`Failed to load project. Check your Personal Access Token and try again.`);
+                } else {
+                    throw new Error(`Failed to load project: ${res.message}`);
+                }
             }
             return res.json();
         })
             .then(reference => {
                 console.log(reference);
-                requestOptions = {
-                    method: 'GET',
-                    headers: myHeaders,
-                    redirect: 'follow'
-                };
-
-                const commit_head = fetch(reference.object.url, requestOptions).then(res => {
-                    const blob = '';
-
-                    this.downloadProject();
-                });
+                console.log('Starting Reference Handler');
+                this.commitProjectFile(reference, personalAccessToken, username, repoName);
             },
-            err => {
-                alert(`${err}`);
-            });
+                err => {
+                    alert(`${err}`);
+                });
     }
-    render () {
+    render() {
         const {
             /* eslint-disable no-unused-vars */
             onClose,
@@ -109,7 +247,7 @@ UsernameModal.propTypes = {
 
 const mapStateToProps = state => ({
     vm: state.scratchGui.vm,
-    saveProjectSb3: state.scratchGui.vm.saveProjectSb3.bind(state.scratchGui.vm),
+    saveProjectSb3: state.scratchGui.vm.saveProjectSb3.bind(state.scratchGui.vm)
 });
 
 const mapDispatchToProps = dispatch => ({

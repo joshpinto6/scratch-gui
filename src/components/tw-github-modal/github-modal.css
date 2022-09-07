@@ -149,7 +149,7 @@
 }
 
 .signin-button {
-    height: 36px;
+    height: 39px;
     margin-top: 8px;
 }
 
@@ -169,6 +169,10 @@
     background: rgb(114, 102, 0);
 }
 
-#passwordLabel {
+#password-setting {
     margin-bottom: 12px;
+}
+
+#token-setting {
+    margin-bottom: 24px;
 }

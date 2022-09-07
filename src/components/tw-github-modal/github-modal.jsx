@@ -353,7 +353,7 @@ const GithubModalComponent = props => (
                     >
                         <FormattedMessage
                             // eslint-disable-next-line max-len
-                            defaultMessage="Enter the name of an existing Github repository. If one is not found, a new one will be created with this name."
+                            defaultMessage="Enter the name of an existing Github repository. If one is not found, a new one will be created with this name. If connecting to a repository that is not owned by your account, write the repo name in the format 'owner/repository'."
                             description="Github RepoName help"
                             id="tw.githubModal.repoNameHelp"
                         />
@@ -362,6 +362,7 @@ const GithubModalComponent = props => (
             />
             <Setting
                 {...props}
+                id="tokenSetting"
                 className={styles.textInput}
                 primary={
                     <div>
@@ -409,7 +410,7 @@ const GithubModalComponent = props => (
             />
             <p>
                 <FormattedMessage
-                    defaultMessage="Clicking Setup below will push your project file to the selected Github repository."
+                    defaultMessage="Clicking Setup below will push your project file to the selected Github repository. If the repository already exists, this will pull the existing data from that repository."
                     description=""
                     id="tw.githubModal.initGithubLabel"
                 />
@@ -418,6 +419,14 @@ const GithubModalComponent = props => (
             <SignInButton
                 {...props}
             />
+
+            <p>
+                <FormattedMessage
+                    defaultMessage="It will also download a JSON file containing all of your project secrets. Keep this file safe and don't share it with anyone. Project collaborators should setup their own Github Integration."
+                    description=""
+                    id="tw.githubModal.initGithubAdmonition"
+                />
+            </p>
         </Box>
     </Modal >
 );
