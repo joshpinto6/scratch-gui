@@ -47,6 +47,9 @@ import gdxforConnectionIconURL from './gdxfor/gdxfor-illustration.svg';
 import gdxforConnectionSmallIconURL from './gdxfor/gdxfor-small.svg';
 
 import twIcon from './tw/tw.svg';
+import ultimateIcon from './ultimategamepad/ultimategamepad.svg';
+import ultimateInsetIconURL from './ultimategamepad/ultimate-small2.svg';
+
 
 import customExtensionIcon from './custom/custom.svg';
 
@@ -337,6 +340,27 @@ export default [
                 defaultMessage="Weird new blocks. Not compatible with Scratch."
                 description="Description of TW extension"
                 id="tw.twExtension.description"
+            />
+        ),
+        featured: true,
+        incompatibleWithScratch: true
+    },
+    {
+        name: (
+            <FormattedMessage
+                defaultMessage="Ultimate Gamepad Extension"
+                description="Name of Gamepad extension"
+                id="tw.gamepadExtension.name"
+            />
+        ),
+        extensionId: 'ultimategamepad',
+        iconURL: ultimateIcon,
+        insetIconURL: ultimateInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="Connect to Bluetooth/USB Gamepads with Blocks. Not compatible with Scratch."
+                description="Description of TW extension"
+                id="tw.gamepadExtension.description"
             />
         ),
         featured: true,

@@ -770,7 +770,7 @@ class MenuBar extends React.Component {
                                         onClick={this.props.onClickGithub}
                                     >
                                         <FormattedMessage
-                                            defaultMessage="Setup Github Integration"
+                                            defaultMessage="Initialize Github Integration"
                                             description="Initialize Github Integration"
                                             id="tw.menuBar.setupGithub"
                                         />

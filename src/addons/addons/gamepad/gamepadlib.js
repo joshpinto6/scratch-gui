@@ -576,6 +576,8 @@ class GamepadLib extends EventTarget {
 
     const gamepads = navigator.getGamepads();
     for (const gamepad of gamepads) {
+      // gamepad.hapticActuators[0].pulse(1.0, 200);
+
       if (gamepad === null) {
         continue;
       }

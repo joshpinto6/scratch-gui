@@ -14,10 +14,11 @@ import styles from './github-modal.css';
 /* eslint-disable react/no-multi-comp */
 
 const BufferedInput = BufferedInputHOC(Input);
+let nothing = 0;
 
 const messages = defineMessages({
     title: {
-        defaultMessage: 'Setup Github Integration',
+        defaultMessage: 'Initialize Github Integration',
         description: 'Title of Github integrations modal',
         id: 'tw.githubModal.title'
     },
@@ -422,7 +423,7 @@ const GithubModalComponent = props => (
 
             <p>
                 <FormattedMessage
-                    defaultMessage="It will also download a JSON file containing all of your project secrets. Keep this file safe and don't share it with anyone. Project collaborators should setup their own Github Integration."
+                    defaultMessage="This will also download a JSON file containing your project secrets. Keep this file safe and don't share it with anyone. Project collaborators should setup their own Github Integrations."
                     description=""
                     id="tw.githubModal.initGithubAdmonition"
                 />
